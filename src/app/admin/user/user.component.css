@@ -1,0 +1,10 @@
+mat-progress-spinner {
+  position: relative;
+  margin: auto;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.full-width{
+    width:100%;
+}

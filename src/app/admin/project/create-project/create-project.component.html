@@ -1,0 +1,213 @@
+<mat-vertical-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="generalFormGroup">
+    <ng-template matStepLabel>Fill out general project data</ng-template>
+    <form [formGroup]="generalFormGroup">
+      <mat-form-field class="full-width">
+        <mat-label>Project Name</mat-label>
+        <input matInput formControlName="Name" [(ngModel)]="projectName">
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Document Name</mat-label>
+        <input matInput formControlName="Document" [(ngModel)]="projectDocument">
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Project Address</mat-label>
+        <textarea matInput formControlName="Address" [(ngModel)]="projectAddress"></textarea>
+      </mat-form-field>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="client">
+    <form [formGroup]="clientFormGroup">
+      <div style="padding:20px;width:100%" *ngIf="isFetchingClient">
+        <mat-progress-spinner [color]="'primary'"
+                              [mode]="'indeterminate'"></mat-progress-spinner>
+      </div>
+      <ng-template matStepLabel>Select client</ng-template>
+      <table mat-table [dataSource]="dataSource" matSort *ngIf="!isFetchingClient" multiTemplateDataRows>
+        <ng-container matColumnDef="Name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let row"> {{row.Name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Address">
+          <th mat-header-cell *matHeaderCellDef> Address </th>
+          <td mat-cell *matCellDef="let row"> {{row.Address}} </td>
+        </ng-container>
+        <ng-container matColumnDef="City">
+          <th mat-header-cell *matHeaderCellDef> City </th>
+          <td mat-cell *matCellDef="let row"> {{row.City}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Phone Number">
+          <th mat-header-cell *matHeaderCellDef> Phone Number </th>
+          <td mat-cell *matCellDef="let row"> {{row.PhoneNumber}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-mini-fab color="primary" (click)="client = row" [disabled]="client == row">
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumns;">
+        </tr>
+        <tr mat-row *matNoDataRow>
+          <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[25, 50, 100]" *ngIf="!isFetchingClient"></mat-paginator>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="usersSelected.length >= 3">
+    <ng-template matStepLabel>Add users</ng-template>
+    <label>Users</label>
+    <div cdkDropList
+         #userList="cdkDropList"
+         [cdkDropListData]="users"
+         [cdkDropListConnectedTo]="[assignedList]"
+         class="example-list"
+         (cdkDropListDropped)="drop($event)">
+      <div class="example-box" *ngFor="let item of users" cdkDrag><p>{{ item.User.FirstName }} {{ item.User.LastName }}</p></div>
+    </div>
+    <label>Included Users</label>
+    <div cdkDropList
+         #assignedList="cdkDropList"
+         [cdkDropListData]="usersSelected"
+         [cdkDropListConnectedTo]="[userList]"
+         class="example-list"
+         (cdkDropListDropped)="drop($event)">
+      <div class="example-box" *ngFor="let item of usersSelected" cdkDrag>
+        <p>{{ item.User.FirstName }} {{ item.User.LastName }}</p>
+        <mat-form-field appearance="fill">
+          <mat-label>Position</mat-label>
+          <mat-select [(ngModel)]="item.Position">
+            <mat-option value="1">Site Engineer</mat-option>
+            <mat-option value="2">Site Supervisor</mat-option>
+            <mat-option value="3">Project Manager</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-step>
+  <mat-step [stepControl]="taskFormGroup">
+    <ng-template matStepLabel>Add tasks</ng-template>
+    <ngx-mat-file-input [formControl]="projectFile" [multiple]="false" [accept]="'.csv'" #file></ngx-mat-file-input>
+    <button mat-raised-button (click)="downloadProjectFormat()" *ngIf="tasks.length == 0">
+      <mat-icon>file_copy</mat-icon>
+      Download format instead
+    </button>
+    <mat-tree [dataSource]="taskDataSource" [treeControl]="treeControl" class="tree">
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+        <li>
+          <div class="mat-tree-node">
+            <div style="width:100%;margin:0">
+              <button mat-icon-button disabled></button>
+              <label><strong>{{ node.Name }}</strong></label>
+              <p *ngIf="node.Description != ''"><button mat-icon-button disabled></button>{{ node.Description }}</p>
+              <p><button mat-icon-button disabled></button>{{ node.Quantity | number:'1.2-2' }} {{ node.Unit }}</p>
+              <p><button mat-icon-button disabled></button>{{ node.Price | number:'1.2-2' }} ( {{ node.BudgetPrice | number:'1.2-2' }} )</p>
+              <p><button mat-icon-button disabled></button>{{ node.Timeline}} - {{ node.End | number:'1.0-0' }}</p>
+            </div>
+          </div>
+        </li>
+      </mat-tree-node>
+      <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+        <li>
+          <div class="mat-tree-node">
+            <div style="width:100%;margin:0">
+              <button mat-icon-button matTreeNodeToggle
+                      [attr.aria-label]="'Toggle ' + node.Name">
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+              </button>
+              <label><strong>{{ node.Name }}</strong></label><br />
+              <p *ngIf="node.Description != ''"><button mat-icon-button disabled></button>{{ node.Description }}</p>
+              <p><button mat-icon-button disabled></button>{{ (node.Price * node.Quantity) | number:'1.2-2' }} ( {{ (node.BudgetPrice * node.Quantity) | number:'1.2-2' }} )</p>
+              <p><button mat-icon-button disabled></button>{{ node.Timeline | number:'1.0-0' }} - {{ node.End | number:'1.0-0' }}</p>
+            </div>
+          </div>
+        </li>
+        <ul [class.tree-invisible]="!treeControl.isExpanded(node)">
+          <ng-container matTreeNodeOutlet></ng-container>
+        </ul>
+      </mat-nested-tree-node>
+    </mat-tree>
+  </mat-step>
+  <mat-step [stepControl]="tasks.length == 0">
+    <ng-template matStepLabel>Summary</ng-template>
+    <mat-tab-group>
+      <mat-tab label="Summary">
+        <div *ngIf="client != null">
+          <label>Project Name</label>
+          <p>{{ projectName }}</p>
+          <label>Project Document</label>
+          <p>{{ projectDocument }}</p>
+
+          <label>Client</label>
+          <p>{{ client.Name }}</p>
+          <p>{{ client.Address }}, {{ client.City }}</p>
+        </div>
+      </mat-tab>
+      <mat-tab label="Documents">
+        <input type="file" (change)="uploadFile($event)" #document />
+
+        <table mat-table [dataSource]="documentDataSource" class="mat-elevation-z8" *ngIf="documents.length > 0">
+          <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let data"> {{data.name}} ( {{ data.size | number:'1.2-2' }} )</td>
+          </ng-container>
+          <ng-container matColumnDef="Actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let data">
+              <button mat-raised-button (click)="deleteFile(data)"><mat-icon>delete_outline</mat-icon></button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedDocumentColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedDocumentColumns;"></tr>
+        </table>
+      </mat-tab>
+      <mat-tab label="Tasks">
+        <div class="mat-elevation-z8" style="overflow-y:scroll;overflow-x:scroll;max-height:500px;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th *ngFor="let i of dateColumn">
+                  {{ i + 1 }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-template #recursiveTable let-tasks>
+                <ng-container *ngFor="let task of tasks">
+                  <tr>
+                    <td class="taskHeader" #tooltip="matTooltip"
+                        [matTooltip]="task.Name + ' ' + task.Description + '( ' + task.Timeline + ' - ' + task.End + ' )'"
+                        [matTooltipPosition]="'right'"
+                        matTooltipHideDelay="1000">
+                      <p>{{ task.Name }}</p>
+                    </td>
+                    <td *ngFor="let i of dateColumn">
+                      <p *ngIf="i >= task.Timeline && i <= task.End && task.Children.length == 0 ">{{ (task.Price * task.Quantity / task.Duration) | number:'1.2-2' }}</p>
+                      <p *ngIf="task.Children.length > 0">&nbsp;</p>
+                    </td>
+                  </tr>
+                  <ng-container *ngIf="task.Children.length > 0">
+                    <ng-container *ngTemplateOutlet="recursiveTable; context:{ $implicit: task.Children }"></ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+
+              <ng-container *ngTemplateOutlet="recursiveTable; context:{ $implicit: tasks }"></ng-container>
+            </tbody>
+          </table>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <button mat-raised-button color="primary" (click)="submitForm()" [disabled]="">Submit</button>
+  </mat-step>
+</mat-vertical-stepper>

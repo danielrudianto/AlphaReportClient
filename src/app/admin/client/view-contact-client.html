@@ -1,0 +1,96 @@
+<button mat-icon-button *ngIf="isCreate || isEdit || isDelete" (click)="isCreate = false;isEdit = false; isDelete = false">
+  <mat-icon>arrow_left_alt</mat-icon>
+  Back
+</button>
+<mat-divider *ngIf="isCreate || isEdit || isDelete"></mat-divider>
+<button mat-mini-fab color="primary" *ngIf="!isCreate && !isEdit && !isDelete" (click)="toggleForm()">
+  <mat-icon>create</mat-icon>
+</button>
+<br />
+<form [formGroup]="addContactForm" #form *ngIf="isCreate">
+  <label style="font-weight:bold;font-size:18px">Create Contact</label>
+  <br />
+  <mat-form-field class="full-width">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="Name">
+  </mat-form-field>
+  <br />
+  <mat-form-field class="full-width">
+    <mat-label>Position</mat-label>
+    <input matInput formControlName="Position">
+  </mat-form-field>
+  <br />
+  <mat-form-field class="full-width">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="Email">
+  </mat-form-field>
+  <br />
+  <mat-form-field class="full-width">
+    <mat-label>Phone Number</mat-label>
+    <input matInput formControlName="PhoneNumber">
+  </mat-form-field>
+  <br />
+  <button mat-raised-button color="primary" (click)="submitContact()" [disabled]="isSubmitting || !addContactForm.valid">Submit</button>
+</form>
+
+<form [formGroup]="editContactForm" #form *ngIf="isEdit">
+  <label style="font-weight:bold;font-size:18px">Edit Contact</label>
+  <br />
+  <mat-form-field class="full-width">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="Name">
+  </mat-form-field>
+  <br />
+  <mat-form-field class="full-width">
+    <mat-label>Position</mat-label>
+    <input matInput formControlName="Position">
+  </mat-form-field>
+  <br />
+  <mat-form-field class="full-width">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="Email">
+  </mat-form-field>
+  <br />
+  <mat-form-field class="full-width">
+    <mat-label>Phone Number</mat-label>
+    <input matInput formControlName="PhoneNumber">
+  </mat-form-field>
+  <br />
+  <button mat-raised-button color="primary" (click)="submitUpdateContact()" [disabled]="isSubmitting || !editContactForm.valid">Submit</button>
+</form>
+<p *ngIf="!isCreate && !isEdit && !isDelete && dataSource.length == 0">There is no contact found.</p>
+<mat-list role="list" *ngIf="!isCreate && !isEdit && !isDelete">
+  <mat-list-item role="listitem" *ngFor="let contact of dataSource" style="margin-top:20px;margin-bottom:20px">
+    <div mat-line>
+      <p>{{ contact.Name }} ({{ contact.Position }})</p>
+    </div>
+    <div mat-line>
+      <mat-icon>call</mat-icon>
+      {{ contact.PhoneNumber }}
+    </div>
+    <div mat-line>
+      <mat-icon>email</mat-icon>
+      {{ contact.Email }}
+    </div>
+    <button mat-button (click)="openEditContactForm(contact)">
+      <mat-icon>edit</mat-icon>
+      Edit
+    </button>
+    <button mat-button (click)="openDeleteContactForm(contact)">
+      <mat-icon>delete</mat-icon>
+      Delete
+    </button>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>
+<div *ngIf="isDelete">
+  <p>{{ deletedContact.Name }} ({{ deletedContact.Position }})</p>
+  <p>
+    <mat-icon>email</mat-icon>
+    {{ deletedContact.Email }}</p>
+  <p>
+    <mat-icon>call</mat-icon>
+    {{ deletedContact.PhoneNumber }}</p>
+
+  <button mat-raised-button (click)="deleteContact()">Submit</button>
+</div>

@@ -1,0 +1,70 @@
+<mat-form-field class="full-width">
+  <mat-label>Search</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. PT. ABC" #input>
+  <button mat-button matSuffix mat-icon-button (click)="openBottomSheet()">
+    <mat-icon>create</mat-icon>
+  </button>
+</mat-form-field>
+
+
+<div class="mat-elevation-z8">
+  <button mat-icon-button (click)="getClients()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+  <div style="padding:20px;width:100%" *ngIf="isFetchingClient">
+    <mat-progress-spinner 
+      [color]="'primary'"
+      [mode]="'indeterminate'"></mat-progress-spinner>
+  </div>
+  
+  <table mat-table [dataSource]="dataSource" matSort *ngIf="!isFetchingClient" multiTemplateDataRows>
+    <ng-container matColumnDef="Name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let row"> {{row.Name}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Address">
+      <th mat-header-cell *matHeaderCellDef> Address </th>
+      <td mat-cell *matCellDef="let row"> {{row.Address}} </td>
+    </ng-container>
+    <ng-container matColumnDef="City">
+      <th mat-header-cell *matHeaderCellDef> City </th>
+      <td mat-cell *matCellDef="let row"> {{row.City}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Phone Number">
+      <th mat-header-cell *matHeaderCellDef> Phone Number </th>
+      <td mat-cell *matCellDef="let row"> {{row.PhoneNumber}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Contacts">
+      <th mat-header-cell *matHeaderCellDef> Contacts </th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-raised-button [matBadge]="row.Contacts.length" matBadgeOverlap="false" (click)="expandedContact = row" [disabled]="row.Contacts.Length == 0" (click)="viewContacts(row.Id)">
+          Contact
+        </button>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="Actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab color="primary" (click)="confirmDeleteClient(row)" [disabled]="row.HasRelation">
+          <mat-icon>
+            delete
+          </mat-icon>
+        </button>
+        <button mat-mini-fab color="accent" (click)="confirmEditClient(row)">
+          <mat-icon>
+            edit
+          </mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row
+        *matRowDef="let row; columns: displayedColumns;">
+    </tr>
+    <tr mat-row *matNoDataRow>
+      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+    </tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[25, 50, 100]" *ngIf="!isFetchingClient"></mat-paginator>
+</div>

@@ -1,0 +1,37 @@
+<form [formGroup]="addUserForm">
+  <label style="font-weight:bold;font-size:20px"> Add User </label>
+  <mat-form-field class="full-width">
+    <mat-label>First Name</mat-label>
+    <input matInput formControlName="FirstName">
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Last Name</mat-label>
+    <textarea matInput formControlName="LastName"></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="Email">
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Position</mat-label>
+    <mat-select formControlName="Position">
+      <mat-option [value]="1">Site Engineer</mat-option>
+      <mat-option [value]="2">Site Supervisor</mat-option>
+      <mat-option [value]="3">Project Manager</mat-option>
+      <mat-option [value]="4">Back Office Staff</mat-option>
+      <mat-option [value]="5">Administrator</mat-option>
+      <mat-option [value]="6">SuperAdministrator</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Password</mat-label>
+    <input matInput type="password" formControlName="Password">
+  </mat-form-field>
+
+
+  <button mat-raised-button color="primary" (click)="createUser()" [disabled]="isSubmitting || !addUserForm.valid">Submit</button>
+</form>

@@ -1,0 +1,21 @@
+<div class="imageWrapper">
+  <div class="image">
+    <img src="../assets/Logo.svg" />
+    <!--<p>Alha Report</p>-->
+  </div>
+</div>
+<div class="formWrapper">
+  <div class="form">
+    <h3 class="headerLogin">Selamat Datang</h3>
+    <mat-form-field class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput placeholder="JohnDoe@example.com" [(ngModel)]="email">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" placeholder="Password" [(ngModel)]="password">
+    </mat-form-field>
+    <br />
+    <button mat-raised-button color="primary" class="full-width" [disabled]="email == '' || password == '' || isLoading" (click)="login()">Login</button>
+  </div>
+</div>

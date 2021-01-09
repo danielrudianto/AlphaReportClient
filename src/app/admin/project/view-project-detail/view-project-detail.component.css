@@ -1,0 +1,30 @@
+label{
+    font-weight:700;
+    margin-top:0;
+}
+
+p{
+    margin-bottom:10px;
+}
+
+.tree-invisible {
+  display: none;
+}
+
+.tree ul, .tree li {
+  list-style-type: none;
+  background-color: white;
+}
+
+.table th {
+  background-color: white;
+  position: sticky;
+  top: 0;
+  min-width: 70px;
+}
+
+.taskHeader {
+  position: sticky;
+  left: 0;
+  background-color: white;
+}

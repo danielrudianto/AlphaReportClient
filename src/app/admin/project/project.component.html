@@ -1,0 +1,55 @@
+<div *ngIf="router.url === '/Admin/Project'">
+  <div class="projectHeader">
+    <div id="headerText">
+      <h3>Welcome To Project Management</h3>
+      <p>Tools from Alpha Smart Project for creating</p>
+      <p>integrated project management.</p>
+
+      <a routerLink="/Admin/Project/Create" role="button" mat-raised-button color="primary">Create New Project</a>
+    </div>
+  </div>
+  <div class="mat-elevation-z-8" style="margin-top:20px;">
+    <mat-spinner *ngIf="isFetchingProject"></mat-spinner>
+    <mat-form-field class="full-width" *ngIf="!isFetchingProject">
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" #searchBar>
+    </mat-form-field>
+    <table mat-table [dataSource]="dataSource" *ngIf="!isFetchingProject">
+      <ng-container matColumnDef="Name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let project">{{ project.Name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Address">
+        <th mat-header-cell *matHeaderCellDef>Address</th>
+        <td mat-cell *matCellDef="let project">{{ project.Address }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Client">
+        <th mat-header-cell *matHeaderCellDef>Client</th>
+        <td mat-cell *matCellDef="let project">{{ project.Client.Name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let project">
+          <div style="background-color:lawngreen;width:30px;height:30px;border-radius:50%" *ngIf="project.ConfirmedBy != ''"></div>
+          <div style="background-color:red;width:30px;height:30px;border-radius:50%" *ngIf="project.ConfirmedBy == ''"></div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let project">
+          <button mat-raised-button color="primary" (click)="viewProject(project.Id)">
+            <mat-icon>view_compact</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row;columns: displayedColumns"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="5">No data matching the filter "{{searchBar.value}}"</td>
+      </tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[25, 50, 100]" *ngIf="!isFetchingProject"></mat-paginator>
+  </div>
+</div>
+<router-outlet></router-outlet>
+

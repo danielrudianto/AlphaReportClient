@@ -1,0 +1,10 @@
+<div style="padding:20px 50px">
+  <p>{{ dataSource.FirstName }} {{ dataSource.LastName }}</p>
+  <p>{{ dataSource.Email }}</p>
+  <p>{{ dataSource.LastPosition.Position }}</p>
+
+  <button mat-raised-button color="primary" (click)="deleteUser()">
+    <mat-icon>delete</mat-icon>
+    Delete
+  </button>
+</div>

@@ -1,0 +1,36 @@
+<div style="margin-bottom:0" id="toolBar">
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="drawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>
+      <img src="/assets/Logo.svg" style="height:32px" />
+    </span>
+    <span>AlphaReport</span>
+  </mat-toolbar>
+</div>
+<mat-drawer-container class="side-container" [hasBackdrop]="false" #dashboard  style="height:calc(100% - 64px)">
+  <mat-drawer #drawer [mode]="'side'"
+    opened
+     (mouseenter)="onSinenavToggle()"
+     (mouseleave)="onSinenavToggle()"
+     [@onSideNavChange]="sideNavState ? 'open' : 'close'" >
+    <mat-nav-list>
+      <a mat-list-item routerLink="/Admin/Project" class="sideNavButton" routerLinkActive="activatedButton">
+        <mat-icon>construction</mat-icon>
+        <span [@animateText]="linkText ? 'show' : 'hide'">Project</span>
+      </a>
+      <a mat-list-item routerLink="/Admin/User" class="sideNavButton" routerLinkActive="activatedButton">
+        <mat-icon>perm_identity</mat-icon>
+        <span [@animateText]="linkText ? 'show' : 'hide'">User</span>
+      </a>
+      <a mat-list-item routerLink="/Admin/Client" class="sideNavButton" routerLinkActive="activatedButton">
+        <mat-icon>supervisor_account</mat-icon>
+        <span [@animateText]="linkText ? 'show' : 'hide'">Client</span>
+      </a>
+    </mat-nav-list>
+  </mat-drawer>
+  <mat-drawer-content  [@onMainContentChange]="onSideNavChange ? 'open': 'close'">
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>

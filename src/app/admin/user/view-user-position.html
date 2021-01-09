@@ -1,0 +1,12 @@
+<mat-list>
+  <mat-list-item *ngFor="let item of dataSource">
+    <p>{{ item.EffectiveDate | date }} | {{ item.Position }}</p> 
+    <button mat-raised-button color="primary" style="margin-left:20px" [disabled]="item.EffectiveDate <= todayDate || dataSource.length == 1" (click)="deletePosition(item.Id)">
+      <mat-icon>
+        delete
+      </mat-icon>
+       Delete
+    </button>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>

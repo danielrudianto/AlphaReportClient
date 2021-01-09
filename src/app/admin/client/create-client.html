@@ -1,0 +1,28 @@
+<form [formGroup]="addClientForm">
+  <label style="font-weight:bold;font-size:20px"> Add Client </label>
+  <mat-form-field class="full-width">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="Name">
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Address</mat-label>
+    <textarea matInput formControlName="Address"></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>City</mat-label>
+    <input matInput formControlName="City">
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Phone Number</mat-label>
+    <input matInput formControlName="PhoneNumber">
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Tax Identification Number</mat-label>
+    <input matInput formControlName="TaxIdentificationNumber">
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="submitClient()" [disabled]="isSubmitting || !addClientForm.valid">Submit</button>
+</form>

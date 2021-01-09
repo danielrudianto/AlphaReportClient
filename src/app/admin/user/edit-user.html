@@ -1,0 +1,18 @@
+<form [formGroup]="editUserForm">
+  <label style="font-weight:bold;font-size:20px"> Add User </label>
+  <mat-form-field class="full-width">
+    <mat-label>First Name</mat-label>
+    <input matInput formControlName="FirstName">
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Last Name</mat-label>
+    <textarea matInput formControlName="LastName"></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="Email">
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="updateUser()" [disabled]="isSubmitting || !editUserForm.valid">Submit</button>
+</form>
